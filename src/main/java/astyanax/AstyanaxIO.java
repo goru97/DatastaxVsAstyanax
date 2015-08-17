@@ -8,6 +8,7 @@ import com.netflix.astyanax.connectionpool.impl.ConnectionPoolType;
 import com.netflix.astyanax.impl.AstyanaxConfigurationImpl;
 import com.netflix.astyanax.retry.RetryNTimes;
 import com.netflix.astyanax.thrift.ThriftFamilyFactory;
+import utils.Constants;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -58,9 +59,8 @@ public class AstyanaxIO {
     }
 
     private static ConnectionPoolConfigurationImpl createPreferredConnectionPoolConfiguration() {
-        int port = 9160;
         Set<String> uniqueHosts = new HashSet<String>();
-        Collections.addAll(uniqueHosts, "127.0.0.1:9160".split(","));
+        Collections.addAll(uniqueHosts, Constants.ASTYANAX_HOSTS.split(","));
         int numHosts = uniqueHosts.size();
         int maxConns = 75;
         int timeout = 10000;
@@ -71,14 +71,14 @@ public class AstyanaxIO {
         timeoutWhenExhausted = Math.max(timeoutWhenExhausted, 1 * numHosts); // Minimum of 1ms per host
 
         final ConnectionPoolConfigurationImpl connectionPoolConfiguration = new ConnectionPoolConfigurationImpl("MyConnectionPool")
-                .setPort(port)
+                .setPort(Constants.ASTYANAX_PORT)
                 .setSocketTimeout(timeout)
                 .setInitConnsPerHost(connsPerHost)
                 .setMaxConnsPerHost(connsPerHost)
                 .setMaxBlockedThreadsPerHost(5)
                 .setMaxTimeoutWhenExhausted(timeoutWhenExhausted)
                 .setInitConnsPerHost(connsPerHost / 2)
-                .setSeeds("127.0.0.1:9160");
+                .setSeeds(Constants.ASTYANAX_HOSTS);
         return connectionPoolConfiguration;
     }
 

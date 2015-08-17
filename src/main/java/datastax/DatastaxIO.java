@@ -1,10 +1,13 @@
 package datastax;
 
+import com.codahale.metrics.Meter;
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy;
+import utils.*;
 
 import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -16,20 +19,27 @@ import java.util.concurrent.TimeUnit;
  */
 public class DatastaxIO {
     private static Session session;
+    private static  Cluster cluster;
+    private final static Meter hostMeter = utils.Metrics.meter(DatastaxIO.class, "Hosts Connected");
+    private final static Meter openConnectionsMeter = utils.Metrics.meter(DatastaxIO.class, "Total Open Connections");
+    private final static Meter inFlightQueriesMeter = utils.Metrics.meter(DatastaxIO.class, "Total InFlight Queries");
+    private final static Meter trashedConnectionsMeter = utils.Metrics.meter(DatastaxIO.class, "Total Trashed Connections");
+    private final static Meter maxLoadMeter = utils.Metrics.meter(DatastaxIO.class, "Maximum Load");
 
     static {
-        //connect();
+        connect();
+        monitorConnection();
     }
-    public static void connect() //TODO: Make it private
+    private static void connect()
     {
-        String[] cassandra_hosts = new String[]{"127.0.0.1:9042"};
+        String[] cassandra_hosts = new String[]{Constants.DATASTAX_HOSTS};
         Set<InetSocketAddress> contactPoints= new HashSet<InetSocketAddress>();
         for(String host:cassandra_hosts){
             InetSocketAddress inetSocketAddress = new InetSocketAddress(host.split(":")[0], Integer.parseInt(host.split(":")[1]));
             contactPoints.add(inetSocketAddress);
         }
 
-        final Cluster cluster = Cluster.builder()
+        cluster = Cluster.builder()
                 .withLoadBalancingPolicy(new DCAwareRoundRobinPolicy("datacenter1"))
                 .withPoolingOptions(getPoolingOptions())
                 .addContactPointsWithPorts(contactPoints)
@@ -60,21 +70,43 @@ public class DatastaxIO {
         return poolingOptions;
     }
 
-    private void monitorConnection() { //TODO: Report the Connection Metrics to Graphite/Riemann
+    private static void monitorConnection() {
         ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
         scheduled.scheduleAtFixedRate(new Runnable() {
             public void run() {
                 Session.State state = getSession().getState();
-                for (Host host : state.getConnectedHosts()) {
-                    int connections = state.getOpenConnections(host);
+                Collection<Host> hosts = state.getConnectedHosts();
+                int totalHosts = hosts.size();
+                long totalOpenConnections = 0;
+                long totalInFlightQueries = 0;
+                long totalTrashedConnections = 0;
+                long totalMaxLoad =0;
+                for (Host host : hosts) {
+                    int openConnections = state.getOpenConnections(host);
                     int inFlightQueries = state.getInFlightQueries(host);
-                    System.out.printf("%s connections=%d current load=%d max load=%d%n",
-                            host, connections, inFlightQueries, connections * 128);
+                    int trashedConnections = state.getTrashedConnections(host);
+                    int maxLoad = openConnections * 128;
+                    totalOpenConnections += openConnections;
+                    totalInFlightQueries += inFlightQueries;
+                    totalTrashedConnections += trashedConnections;
+                    totalMaxLoad += maxLoad;
+                    /*System.out.printf("%s connections=%d current load=%d max load=%d%n",
+                            host, openConnections, inFlightQueries, openConnections * 128);*/
                 }
+
+                hostMeter.mark(totalHosts);
+                openConnectionsMeter.mark(totalOpenConnections);
+                inFlightQueriesMeter.mark(totalInFlightQueries);
+                trashedConnectionsMeter.mark(totalTrashedConnections);
+                maxLoadMeter.mark(totalMaxLoad);
             }
-        }, 1, 1, TimeUnit.MINUTES);
+        }, 30, 30, TimeUnit.SECONDS);
     }
 
+    public void close() { //Not to be used with time-series data.
+        session.close();
+        cluster.close();
+    }
 
     public static Session getSession() {
         return session;

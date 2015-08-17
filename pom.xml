@@ -100,12 +100,6 @@
         <version>3.0.1</version>
     </dependency>
 
-    <dependency>
-        <groupId>com.aphyr</groupId>
-        <artifactId>riemann-java-client</artifactId>
-        <version>0.2.9</version>
-    </dependency>
-
     <!-- todo: get off alpha version! -->
     <dependency>
         <groupId>com.google.protobuf</groupId>
