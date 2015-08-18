@@ -47,7 +47,7 @@ public class AstyanaxIO {
 
     private static AstyanaxConfigurationImpl createPreferredAstyanaxConfiguration() {
         AstyanaxConfigurationImpl astyconfig = new AstyanaxConfigurationImpl()
-                .setDiscoveryType(NodeDiscoveryType.NONE)
+                .setDiscoveryType(NodeDiscoveryType.RING_DESCRIBE)
                 .setConnectionPoolType(ConnectionPoolType.ROUND_ROBIN);
 
         int numRetries = 5;
@@ -59,25 +59,18 @@ public class AstyanaxIO {
     }
 
     private static ConnectionPoolConfigurationImpl createPreferredConnectionPoolConfiguration() {
-        Set<String> uniqueHosts = new HashSet<String>();
-        Collections.addAll(uniqueHosts, Constants.ASTYANAX_HOSTS.split(","));
-        int numHosts = uniqueHosts.size();
-        int maxConns = 75;
         int timeout = 10000;
 
-        int connsPerHost = maxConns / numHosts + (maxConns % numHosts == 0 ? 0 : 1);
         // This timeout effectively results in waiting a maximum of (timeoutWhenExhausted / numHosts) on each Host
         int timeoutWhenExhausted = 2000;
-        timeoutWhenExhausted = Math.max(timeoutWhenExhausted, 1 * numHosts); // Minimum of 1ms per host
 
         final ConnectionPoolConfigurationImpl connectionPoolConfiguration = new ConnectionPoolConfigurationImpl("MyConnectionPool")
                 .setPort(Constants.ASTYANAX_PORT)
                 .setSocketTimeout(timeout)
-                .setInitConnsPerHost(connsPerHost)
-                .setMaxConnsPerHost(connsPerHost)
+                .setInitConnsPerHost(15)
+                .setMaxConnsPerHost(15)
                 .setMaxBlockedThreadsPerHost(5)
                 .setMaxTimeoutWhenExhausted(timeoutWhenExhausted)
-                .setInitConnsPerHost(connsPerHost / 2)
                 .setSeeds(Constants.ASTYANAX_HOSTS);
         return connectionPoolConfiguration;
     }

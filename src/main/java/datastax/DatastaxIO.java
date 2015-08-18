@@ -62,7 +62,7 @@ public class DatastaxIO {
     private static PoolingOptions getPoolingOptions(){
         final PoolingOptions poolingOptions = new PoolingOptions();
         poolingOptions
-                .setCoreConnectionsPerHost(HostDistance.LOCAL,  4)
+                .setCoreConnectionsPerHost(HostDistance.LOCAL,  15)
                 .setMaxConnectionsPerHost(HostDistance.LOCAL, 10)
                 .setCoreConnectionsPerHost(HostDistance.REMOTE, 2)
                 .setMaxConnectionsPerHost(HostDistance.REMOTE, 4)
@@ -90,8 +90,6 @@ public class DatastaxIO {
                     totalInFlightQueries += inFlightQueries;
                     totalTrashedConnections += trashedConnections;
                     totalMaxLoad += maxLoad;
-                    /*System.out.printf("%s connections=%d current load=%d max load=%d%n",
-                            host, openConnections, inFlightQueries, openConnections * 128);*/
                 }
 
                 hostMeter.mark(totalHosts);
