@@ -100,7 +100,7 @@ public class DatastaxIO {
                 trashedConnectionsMeter.mark(totalTrashedConnections);
                 maxLoadMeter.mark(totalMaxLoad);
             }
-        }, 30, 30, TimeUnit.SECONDS);
+        }, 1, 1, TimeUnit.SECONDS);
     }
 
     public void close() { //Not to be used with time-series data.
