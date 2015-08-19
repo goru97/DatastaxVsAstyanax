@@ -63,7 +63,7 @@ public class DatastaxIO {
         final PoolingOptions poolingOptions = new PoolingOptions();
         poolingOptions
                 .setCoreConnectionsPerHost(HostDistance.LOCAL,  15)
-                .setMaxConnectionsPerHost(HostDistance.LOCAL, 10)
+                .setMaxConnectionsPerHost(HostDistance.LOCAL, 15)
                 .setCoreConnectionsPerHost(HostDistance.REMOTE, 2)
                 .setMaxConnectionsPerHost(HostDistance.REMOTE, 4)
                 .setHeartbeatIntervalSeconds(60); //Time after which driver will send a dummy request to the host so that the connection is not dropped by intermediate network devices (routers, firewalls…). The heartbeat interval should be set higher than SocketOptions.readTimeoutMillis

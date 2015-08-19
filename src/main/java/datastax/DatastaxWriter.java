@@ -1,12 +1,15 @@
 package datastax;
 
 import com.codahale.metrics.Meter;
+import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.Batch;
 import com.codahale.metrics.Timer;
 import com.datastax.driver.core.querybuilder.Insert;
+import utils.Constants;
 import utils.Metrics;
 
+import java.util.Random;
 import java.util.concurrent.Future;
 /**
  * Created by GauravBajaj on 8/10/15.
@@ -39,6 +42,18 @@ public class DatastaxWriter {
         Insert insert = DatastaxQueryBuilder.addDummyMetric();
         long datastaxStartTime = System.currentTimeMillis();
         session.execute(insert);
+        long datastaxEndTime = System.currentTimeMillis();
+        System.out.println("Datastax Write Execution Time " + (datastaxEndTime - datastaxStartTime));
+        writeMeter.mark();
+    }
+
+    public static void writePrepareToDB(){
+        Session session = DatastaxIO.getSession();
+        //Insert insert = DatastaxQueryBuilder.addDummyMetric();
+        String psInsert = "INSERT INTO \"DATA\".metrics_full (key, column1, value) VALUES (?,?,?)";
+        PreparedStatement preparedStatement = session.prepare(psInsert);
+        long datastaxStartTime = System.currentTimeMillis();
+        session.execute(preparedStatement.bind("15581.int.abcdefg.hijklmnop.qrstuvw.xyz.ABCDEFG.HIJKLMNOP.QRSTUVW.XYZ.abcdefg.hijklmnop.qrstuvw.xyz.met."+(new Random().nextInt(20 -1) + 1), System.currentTimeMillis(), DatastaxSerializer.DoubleSerializer.serialize(new Random().nextDouble())));
         long datastaxEndTime = System.currentTimeMillis();
         System.out.println("Datastax Write Execution Time " + (datastaxEndTime - datastaxStartTime));
         writeMeter.mark();
