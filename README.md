@@ -21,7 +21,7 @@ Each for Read using Astyanax, Read using Datastax, Write using Astyanax, Write u
 
 •	Cassandra Cluster:
 
-Cassandra (Version 2.0) cluster with four nodes was spun using Rackspace’s Cassandra Orchestration stack.
+Cassandra (Version 2.0) cluster with six nodes and one seed node was spun using Rackspace’s Cassandra Orchestration stack.
 Each node with following configuration:<br />
 CPU<br />
 8 vCPUs<br />
