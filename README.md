@@ -33,6 +33,12 @@ Network<br />
 1.2 Gb / s<br />
 
 •	Keyspace and Table:</br>
+
+CREATE KEYSPACE "DATA" WITH replication = {</br>
+  'class': 'SimpleStrategy',</br>
+  'replication_factor': '3'</br>
+};
+
 use "DATA";</br>
 
 CREATE TABLE metrics_full (</br>
