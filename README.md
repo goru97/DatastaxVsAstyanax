@@ -33,6 +33,7 @@ Network<br />
 1.2 Gb / s<br />
 
 •	Keyspace and Table:
+use "DATA";
 
 CREATE TABLE metrics_full (
   key text,
