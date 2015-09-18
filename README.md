@@ -32,37 +32,37 @@ System Disk<br />
 Network<br />
 1.2 Gb / s<br />
 
-•	Keyspace and Table:
-use "DATA";
+•	Keyspace and Table:</br>
+use "DATA";</br>
 
-CREATE TABLE metrics_full (
-  key text,
-  column1 bigint,
-  value blob,
-  PRIMARY KEY ((key), column1)
-) WITH COMPACT STORAGE AND
-  bloom_filter_fp_chance=0.010000 AND
-  caching='KEYS_ONLY' AND
-  comment='' AND
-  dclocal_read_repair_chance=0.100000 AND
-  gc_grace_seconds=864000 AND
-  index_interval=128 AND
-  read_repair_chance=0.000000 AND
-  replicate_on_write='true' AND
-  populate_io_cache_on_flush='false' AND
-  default_time_to_live=0 AND
-  speculative_retry='NONE' AND
-  memtable_flush_period_in_ms=0 AND
-  compaction={'class': 'SizeTieredCompactionStrategy'} AND
-  compression={'sstable_compression': 'LZ4Compressor'};
+CREATE TABLE metrics_full (</br>
+  key text,</br>
+  column1 bigint,</br>
+  value blob,</br>
+  PRIMARY KEY ((key), column1)</br>
+) WITH COMPACT STORAGE AND</br>
+  bloom_filter_fp_chance=0.010000 AND</br>
+  caching='KEYS_ONLY' AND</br>
+  comment='' AND</br>
+  dclocal_read_repair_chance=0.100000 AND</br>
+  gc_grace_seconds=864000 AND</br>
+  index_interval=128 AND</br>
+  read_repair_chance=0.000000 AND</br>
+  replicate_on_write='true' AND</br>
+  populate_io_cache_on_flush='false' AND</br>
+  default_time_to_live=0 AND</br>
+  speculative_retry='NONE' AND</br>
+  memtable_flush_period_in_ms=0 AND</br>
+  compaction={'class': 'SizeTieredCompactionStrategy'} AND</br>
+  compression={'sstable_compression': 'LZ4Compressor'};</br>
 
-•	Graphite:
+•	Graphite:</br>
 
-Graphite was used as a time-series database to store the metrics generated during the test.
+Graphite was used as a time-series database to store the metrics generated during the test.</br>
 
-•	Grafana: To monitor the metrics using nice Graphs.
+•	Grafana: To monitor the metrics using nice Graphs.</br>
 
-#Running the program using maven:
+#Running the program using maven:</br>
 mvn clean install<br />
 mvn exec:java -Dexec.args="'astyanax' 'read'" (For Read Operations using Astyanax Drivers).<br />
 mvn exec:java -Dexec.args="'datastax' 'read'" (For Read Operations using Datastax Drivers).<br />
