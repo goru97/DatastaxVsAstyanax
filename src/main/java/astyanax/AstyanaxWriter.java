@@ -50,7 +50,7 @@ public class AstyanaxWriter {
         }
     }
 
-    public void writeToDB() {
+    public static void writeToDB() {
         MutationBatch mb = AstyanaxIO.getKeyspace().prepareMutationBatch();
 
         String metricName = "15581.int.abcdefg.hijklmnop.qrstuvw.xyz.ABCDEFG.HIJKLMNOP.QRSTUVW.XYZ.abcdefg.hijklmnop.qrstuvw.xyz.met."+ new Random().nextInt();
@@ -58,8 +58,11 @@ public class AstyanaxWriter {
                 .putColumn(System.currentTimeMillis(), new Random().nextDouble(), null);
 
         try {
+            final Timer.Context actualWriteCtx = batchWriteDurationTimer.time();
             long astyanaxStartTime = System.currentTimeMillis();
             mb.execute();
+            writeMeter.mark();
+            actualWriteCtx.stop();
             long astyanaxEndTime = System.currentTimeMillis();
             System.out.println("Astyanax Batch Write Execution Time " + (astyanaxEndTime - astyanaxStartTime));
             writeMeter.mark();

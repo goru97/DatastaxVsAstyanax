@@ -4,6 +4,7 @@ import com.codahale.metrics.Meter;
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy;
+import com.datastax.driver.core.policies.TokenAwarePolicy;
 import utils.*;
 
 import java.net.InetSocketAddress;
@@ -40,7 +41,8 @@ public class DatastaxIO {
         }
 
         cluster = Cluster.builder()
-                .withLoadBalancingPolicy(new DCAwareRoundRobinPolicy("datacenter1"))
+                //.withLoadBalancingPolicy(new DCAwareRoundRobinPolicy("datacenter1"))
+                .withLoadBalancingPolicy(new TokenAwarePolicy(new DCAwareRoundRobinPolicy("datacenter1")))
                 .withPoolingOptions(getPoolingOptions())
                 .addContactPointsWithPorts(contactPoints)
                 .build();

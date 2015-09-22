@@ -48,7 +48,7 @@ public class AstyanaxIO {
     private static AstyanaxConfigurationImpl createPreferredAstyanaxConfiguration() {
         AstyanaxConfigurationImpl astyconfig = new AstyanaxConfigurationImpl()
                 .setDiscoveryType(NodeDiscoveryType.RING_DESCRIBE)
-                .setConnectionPoolType(ConnectionPoolType.ROUND_ROBIN);
+                .setConnectionPoolType(ConnectionPoolType.TOKEN_AWARE);
 
         int numRetries = 5;
         if (numRetries > 0) {
@@ -66,6 +66,7 @@ public class AstyanaxIO {
 
         final ConnectionPoolConfigurationImpl connectionPoolConfiguration = new ConnectionPoolConfigurationImpl("MyConnectionPool")
                 .setPort(Constants.ASTYANAX_PORT)
+                .setLocalDatacenter("datacenter1")
                 .setSocketTimeout(timeout)
                 .setInitConnsPerHost(15)
                 .setMaxConnsPerHost(15)
