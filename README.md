@@ -69,6 +69,7 @@ Graphite was used as a time-series database to store the metrics generated durin
 •	Grafana: To monitor the metrics using nice Graphs.</br>
 
 #Running the program using maven:</br>
+Clone the Repo.</br>
 mvn clean install<br />
 mvn exec:java -Dexec.args="'astyanax' 'read'" (For Read Operations using Astyanax Drivers).<br />
 mvn exec:java -Dexec.args="'datastax' 'read'" (For Read Operations using Datastax Drivers).<br />
