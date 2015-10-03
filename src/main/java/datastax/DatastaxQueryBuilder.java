@@ -37,7 +37,7 @@ public class DatastaxQueryBuilder{
     }
 
     protected static Insert addDummyMetric(){
-        ByteBuffer key = DatastaxSerializer.StringSerializer.serialize("15581.int.abcdefg.hijklmnop.qrstuvw.xyz.ABCDEFG.HIJKLMNOP.QRSTUVW.XYZ.abcdefg.hijklmnop.qrstuvw.xyz.met." + new Random().nextInt());
+        ByteBuffer key = DatastaxSerializer.StringSerializer.serialize("15581.int.abcdefg.hijklmnop.qrstuvw.xyz.ABCDEFG.HIJKLMNOP.QRSTUVW.XYZ.abcdefg.hijklmnop.qrstuvw.xyz.met." + (new Random().nextInt(20 - 1) + 1));
         ByteBuffer column1 = DatastaxSerializer.LongSerializer.serialize(System.currentTimeMillis());
         ByteBuffer value = DatastaxSerializer.DoubleSerializer.serialize(new Random().nextDouble());
 
