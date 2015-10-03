@@ -74,3 +74,27 @@ mvn exec:java -Dexec.args="'astyanax' 'read'" (For Read Operations using Astyana
 mvn exec:java -Dexec.args="'datastax' 'read'" (For Read Operations using Datastax Drivers).<br />
 mvn exec:java -Dexec.args="'astyanax' 'write'" (For Write Operations using Astyanax Drivers).<br />
 mvn exec:java -Dexec.args="'datastax' 'write'" (For Write Operations using Datastax Drivers).<br />
+
+#Results:</br>
+
+##Batch Writes:</br>
+•	Batch Size 20:</br>
+###Datastax Leading
+![alt tag](https://raw.githubusercontent.com/goru97/DatastaxVsAstyanax/master/ScreenShots/Writes/Batch_20.png)
+
+•	Batch Size 15:</br>
+###Datastax ~= Astyanax
+![alt tag](https://raw.githubusercontent.com/goru97/DatastaxVsAstyanax/master/ScreenShots/Writes/Batch_15.png)
+
+•	Batch Size 10:</br>
+###Astyanax Leading
+![alt tag](https://raw.githubusercontent.com/goru97/DatastaxVsAstyanax/master/ScreenShots/Writes/Batch_10.png)
+
+•	Batch Size 5:</br>
+###Astyanax Leading
+![alt tag](https://raw.githubusercontent.com/goru97/DatastaxVsAstyanax/master/ScreenShots/Writes/Batch_5.png)
+
+##Single Writes using prepared statement (without using batches):</br>
+###Datastax Leading
+![alt tag](https://raw.githubusercontent.com/goru97/DatastaxVsAstyanax/master/ScreenShots/Writes/Single.png)
+![alt tag](https://raw.githubusercontent.com/goru97/DatastaxVsAstyanax/master/ScreenShots/Writes/Single_With_Latency.png)
